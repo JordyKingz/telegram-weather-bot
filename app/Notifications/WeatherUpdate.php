@@ -42,7 +42,7 @@ class WeatherUpdate extends Notification
      */
     public function toTelegram($notifiable)
     {
-      $url = 'https://api.darksky.net/forecast/'.env('FORECAST').'/53.1938687,6.5632098?units=si&&lang=nl';
+      $url = 'https://api.darksky.net/forecast/'.env('FORECAST').'/'.env('LOCATION').'?units=si&&lang=nl';
       $json = file_get_contents($url);
       $result = json_decode($json);
 
