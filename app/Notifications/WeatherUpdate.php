@@ -48,7 +48,7 @@ class WeatherUpdate extends Notification
       $result = json_decode($json);
 
       return TelegramMessage::create()
-      ->to(env('CHAT_ID'))
+      ->to(env('CHAT_ID')) // Keep you chat_ID private
       ->content("In de ochtend om ". date('H:i:s', $result->hourly->data[2]->time) ."
 is het ". $result->hourly->data[2]->summary ."
 met een temperatuur van ". $result->hourly->data[2]->temperature .". \n \n". // Morning at 08.00. [2] is time at the moment
