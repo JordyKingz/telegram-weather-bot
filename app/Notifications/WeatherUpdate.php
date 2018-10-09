@@ -35,36 +35,36 @@ class WeatherUpdate extends Notification
     }
 
     /**
-     * Get the mail representation of the notification.
+     * Send weather update with Telegram
      *
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toTelegram($notifiable)
     {
+      // This notification runs on a cronjob everymorning at 08.00
       $url = 'https://api.darksky.net/forecast/'.env('FORECAST').'/'.env('LOCATION').'?units=si&&lang=nl';
       $json = file_get_contents($url);
       $result = json_decode($json);
 
       return TelegramMessage::create()
       ->to(env('CHAT_ID'))
-      ->content("
-        Goedemorgen Jordy, \n
-        Dit is de weersverwachting van vandaag. \n
-        In de ochtend om ". date('H:i:s', $result->hourly->data[2]->time) ."
-        is het ". $result->hourly->data[2]->summary ."
-        met een temperatuur van ". $result->hourly->data[2]->temperature .". \n
+      ->content("In de ochtend om ". date('H:i:s', $result->hourly->data[2]->time) ."
+is het ". $result->hourly->data[2]->summary ."
+met een temperatuur van ". $result->hourly->data[2]->temperature .". \n \n". // Morning at 08.00. [2] is time at the moment
 
-        Later op de dag rond ". date('H:i:s', $result->hourly->data[6]->time) ."
-        is het ". $result->hourly->data[6]->summary ."
-        met een temperatuur van ". $result->hourly->data[6]->temperature .". \n
+"In de middag ". date('H:i:s', $result->hourly->data[6]->time) ."
+is het ". $result->hourly->data[6]->summary ."
+met een temperatuur van ". $result->hourly->data[6]->temperature .". \n \n". // 12.00. [6] plus 4 hours
 
-        Savonds om ". date('H:i:s', $result->hourly->data[9]->time) ."
-        is het ". $result->hourly->data[9]->summary ."
-        met een temperatuur van ". $result->hourly->data[9]->temperature .". \n
+"Om een uur of ". date('H:i:s', $result->hourly->data[10]->time) ."
+is het ". $result->hourly->data[10]->summary ."
+met een temperatuur van ". $result->hourly->data[10]->temperature .". \n \n". // 16.00. [10] plus 8 hours
 
-        Succes vandaag!
-      "); // Inline Button
+"afsluitend om ". date('H:i:s', $result->hourly->data[16]->time) ."
+is het ". $result->hourly->data[16]->summary ."
+met een temperatuur van ". $result->hourly->data[16]->temperature .". \n \n" // 22.00. [16] plus 14 hours
+      );
     }
 
     /**
